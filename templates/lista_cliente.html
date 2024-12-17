@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4 p-4 bg-light rounded shadow-sm">
+        <h1 class="">lista de clientes</h1>
+        <form class="d-flex" role="search" method="POST" action="{% url 'search_client' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Buscar por nombre" name="searched">
+            <button class="btn btn-outline-success" type="submit">Buscar</button>
+          </form>
+        <hr>
+        {% if clientes %}
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Fono</th>
+                        <th scope="col">Fecha Ingreso</th>
+                        {% if user.is_superuser %}
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                        <tr>
+                            <th scope="row">{{cliente.pk}}</th>
+                            <td> {{cliente.nombre}} </td>
+                            <td> {{cliente.telefono}} </td>
+                            <td> {{cliente.fecha_ingreso |date:"d - m - Y" }} </td>
+                            {% if user.is_superuser %}
+                            <td class=""> <a class="btn btn-primary" href="{% url 'update_client' cliente.pk %}">Editar</a> </td>
+                            <td class=""> 
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Eliminar</button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Eliminar a {{cliente.nombre}}?</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  Esta seguro de esta accion?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                  <a class="btn btn-danger" href="{% url 'delete_client' cliente.pk %}">Confirmar</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="d-flex justify-content-center">
+                <small style="text-align: center;">No se han encontrado clientes</small>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

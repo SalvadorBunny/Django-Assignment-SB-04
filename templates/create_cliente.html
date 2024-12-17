@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4 p-4 bg-light rounded shadow-sm">
+        {% if request.path == '/clients/add/'  %}
+        <h1>Añadir Cliente</h1>
+        {% else %}
+        <h1>Editar cliente</h1>
+        {% endif %}
+        <hr>
+        <form method="POST"  action="">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="btn btn-primary"> Submit </button>
+        </form>
+       
+    </div>
+{% endblock %}
